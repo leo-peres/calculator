@@ -29,6 +29,9 @@ buttonContainer.addEventListener("click", (evt) => {
     else if(target.classList.contains("eq-button")) {
         handleEqButton();
     }
+    else if(target.classList.contains("clear-button")) {
+        clearCalculator();
+    }
 });
 
 
@@ -39,9 +42,12 @@ buttonContainer.addEventListener("click", (evt) => {
 const maxDigits = 12;
 
 const operation = {
+    operand1: 0,
+    operand2: null,
     operand1Ready: false,
     operand2Ready: false,
     newOperand: false,
+    operator: '=',
     operate: function () {
         let op1 = this.operand1;
         let op2 = this.operand2;
@@ -103,4 +109,14 @@ function handleOpButton(operator) {
 
     operation.operator = operator;
 
+}
+
+function clearCalculator() {
+    operation.operand1 = 0;
+    operation.operand2 = null;
+    operation.operand1Ready = false;
+    operation.operand2Ready = false;
+    operation.newOperand = false;
+    operation.operator = '=';
+    display.innerText = '0';
 }
