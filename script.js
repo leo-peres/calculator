@@ -104,21 +104,3 @@ function handleOpButton(operator) {
     operation.operator = operator;
 
 }
-
-function handleEqButton() {
-
-    if(!operation.operand1Ready) {
-        operation.newOperand = true;
-    }
-    else if(operation.operand2Ready) {
-        operation.operand2 = parseInt(display.innerText);
-        operation.operate();
-        display.innerText = operation.result;
-        operation.operand1 = operation.result;
-        operation.operand2Ready = false;
-        operation.newOperand = true;
-    }
-
-    operation.operator = '='
-
-}
