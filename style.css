@@ -6,11 +6,6 @@ body {
     justify-content: stretch;
 }
 
-h1 {
-    text-align: center;
-    border-bottom: 1px solid black;
-}
-
 .calculator-container {
     flex: 1 1 auto;
     display: flex;
@@ -19,26 +14,43 @@ h1 {
 }
 
 .calculator {
+    background-color: rgb(8, 8, 8);
+    padding: 8px;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    flex: 0 0 240px;
-    height: 360px;
+    flex: 0 0 320px;
+    height: 480px;
+}
+
+.display-container {
+    background-color: rgb(48, 64, 64);
+    padding: 12px 6px;
+    display: flex;
+    justify-content: stretch;
 }
 
 .display {
+    color: rgb(16, 16, 16);
     font-size: 48px;
+    background-color: rgb(100, 148, 148);
+    flex: 1 1 auto;
 }
 
 .button-row {
     flex: 1 1 auto;
     display: flex;
-    justify-content: stretch;
+    justify-content: center;
     align-items: stretch;
 }
 
 button {
-    flex: 0 0 48px;
+    font-size: 20px;
+    font-weight: bolder;
+    color: rgb(224, 224, 224);
+    background-color: rgb(32, 32, 32);
+    border-radius: 0px;
+    flex: 0 0 64px;
 }
