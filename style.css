@@ -26,6 +26,7 @@ body {
 }
 
 .display-container {
+    font-weight: bold;
     background-color: rgb(48, 64, 64);
     padding: 12px 6px;
     display: flex;
@@ -35,8 +36,17 @@ body {
 .display {
     color: rgb(16, 16, 16);
     font-size: 48px;
+    text-align: end;
+    padding: 0px 2px;
     background-color: rgb(100, 148, 148);
     flex: 1 1 auto;
+}
+
+.button-container {
+    padding-top: 4px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .button-row {
