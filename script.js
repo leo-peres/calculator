@@ -190,7 +190,7 @@ function roundNumberToDisplay(x) {
             return largeMagnitudeToDisplay(x);
 
         return xArr.join('');
-        
+
     }
 
 }
@@ -212,11 +212,16 @@ function largeMagnitudeToDisplay(x) {
 
 function displayScientificNotation(x) {
 
+    if(x == 0) {
+        clearScientificNotation();
+        return;
+    }
+
     let exponent = Math.trunc(Math.log10(Math.abs(x)));
 
     let negative = x < 0 ? 1 : 0;
 
-    if(exponent <= 1- displayCapacity + negative || exponent >= displayCapacity - negative) {
+    if(exponent <= 1 - (displayCapacity - negative) || exponent >= displayCapacity - negative) {
         scientificNotationBase.innerText = "x10";
         scientificNotationExponent.innerText = exponent;  
     }
