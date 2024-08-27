@@ -5,6 +5,9 @@ HTML elements
 
 const display = document.querySelector(".display");
 
+const scientificNotationBase = document.querySelector(".scientific-notation-base");
+const scientificNotationExponent = document.querySelector(".scientific-notation-exponent");
+
 const buttonContainer = document.querySelector(".button-container");
 
 /*
@@ -19,7 +22,7 @@ Button event listeners
 buttonContainer.addEventListener("click", (evt) => {
     let target = evt.target;
     if(target.classList.contains("number-button")) {
-        let number_pressed = parseInt(target.innerText);
+        let number_pressed = parseFloat(target.innerText);
         displayUpdate(number_pressed);
     }
     else if(target.classList.contains("op-button")) {
@@ -39,11 +42,11 @@ buttonContainer.addEventListener("click", (evt) => {
 ************************************************************************************************
 */
 
-const maxDigits = 12;
+const displayCapacity = 10;
 
 const operation = {
-    operand1: 0,
-    operand2: null,
+    operand1: null,
+    operand2: 0,
     operand1Ready: false,
     operand2Ready: false,
     newOperand: false,
@@ -78,16 +81,22 @@ const operation = {
 
 function displayUpdate(input) {
 
-    let currentNumber = parseInt(display.innerText);
+    let currentNumber = operation.operand2;
     if(operation.newOperand) {
+
         operation.operand1 = currentNumber;
+        operation.operand2 = input;
         operation.operand1Ready = true;
         display.innerText = input;
         operation.newOperand = false;
         operation.operand2Ready = true;
+
+        clearScientificNotation();
+
     }
-    else if(currentNumber < (10**(maxDigits - 1))) {
+    else if(!displayFull()) {
         currentNumber = 10*currentNumber + input;
+        operation.operand2 = currentNumber;
         display.innerText = currentNumber;
     }
 
@@ -95,15 +104,14 @@ function displayUpdate(input) {
 
 function handleOpButton(operator) {
 
-    if(!operation.operand1Ready) {
+    if(operation.operand1Ready) {
+        operation.operate();
+        display.innerText = roundNumberToDisplay(operation.result);
+        operation.operand2 = operation.result;
+        operation.operand1Ready = false;
         operation.newOperand = true;
     }
-    else if(operation.operand2Ready) {
-        operation.operand2 = parseInt(display.innerText);
-        operation.operate();
-        display.innerText = operation.result;
-        operation.operand1 = operation.result;
-        operation.operand2Ready = false;
+    else {
         operation.newOperand = true;
     }
 
@@ -112,11 +120,116 @@ function handleOpButton(operator) {
 }
 
 function clearCalculator() {
-    operation.operand1 = 0;
-    operation.operand2 = null;
+
+    operation.operand1 = null;
+    operation.operand2 = 0;
     operation.operand1Ready = false;
     operation.operand2Ready = false;
     operation.newOperand = false;
     operation.operator = '=';
     display.innerText = '0';
+
+    clearScientificNotation();
+
+}
+
+/*
+************************************************************************************************
+*/
+
+function displayFull() {
+    return display.innerText.length >= displayCapacity;
+}
+
+function roundNumberToDisplay(x) {
+
+    let xString = String(x);
+    const xArr = xString.split('');
+
+    let dotIndex = xArr.indexOf('.');
+    let eIndex = xArr.indexOf('e');
+    if(eIndex != -1) {
+
+        let exponent = xArr.slice(eIndex+1);
+
+        if(exponent[0] == '+')
+            exponent.shift();
+
+        scientificNotationBase.innerText = "x10";
+        scientificNotationExponent.innerText = exponent.join('');
+
+        //too lazy to properly round the number
+        //might do it later
+        let coefficient = xArr.slice(0, eIndex).slice(0, displayCapacity);    
+
+        coefficient = removeTrailingZeros(coefficient)
+        if(coefficient[coefficient.length - 1] == '.')
+            coefficient.pop();
+
+        return coefficient.join('');
+
+    }
+
+    displayScientificNotation(x);
+
+    if(dotIndex != - 1) {
+
+        if(dotIndex > displayCapacity)
+            return largeMagnitudeToDisplay(x);
+
+        const truncArr = xArr.slice(0, displayCapacity);
+        if(truncArr.includes('.'))
+            return truncArr.join('');
+        else
+            return removeTrailingZeros(truncArr).join('');
+
+    }
+    else {
+
+        if(xArr.length > displayCapacity)
+            return largeMagnitudeToDisplay(x);
+
+        return xArr.join('');
+        
+    }
+
+}
+
+function largeMagnitudeToDisplay(x) {
+
+    let xString = String(x);
+    let xArr = xString.split('');
+
+    let negativeSign = xArr[0] == '-' ? 1 : 0;
+
+    let decimals = removeTrailingZeros(xArr.slice(1 + negativeSign, (displayCapacity - 1) - negativeSign));
+    if(decimals.length > 0)
+        return xArr.slice(0, negativeSign + 1).concat('.', decimals).join('');
+    else
+        return xArr.slice(0, negativeSign + 1).join('');
+
+}
+
+function displayScientificNotation(x) {
+
+    let exponent = Math.trunc(Math.log10(Math.abs(x)));
+
+    let negative = x < 0 ? 1 : 0;
+
+    if(exponent <= 1- displayCapacity + negative || exponent >= displayCapacity - negative) {
+        scientificNotationBase.innerText = "x10";
+        scientificNotationExponent.innerText = exponent;  
+    }
+    else
+        clearScientificNotation();
+
+}
+
+function removeTrailingZeros(arr) {
+    return arr.filter((x, i, arr) => !arr.slice(i).every(y => y === '0'));
+}
+
+function clearScientificNotation() {
+    scientificNotationBase.innerText = "";
+    scientificNotationExponent.innerText = "";
 }

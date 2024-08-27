@@ -21,11 +21,12 @@ body {
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    flex: 0 0 320px;
+    flex: 0 0 340px;
     height: 480px;
 }
 
 .display-container {
+    font-family: monospace, monospace;
     font-weight: bold;
     background-color: rgb(48, 64, 64);
     padding: 12px 6px;
@@ -40,6 +41,26 @@ body {
     padding: 0px 2px;
     background-color: rgb(100, 148, 148);
     flex: 1 1 auto;
+}
+
+.display-scientific-notation {
+    font-size: 6px;
+    background-color: rgb(100, 148, 148);
+    flex: 0 0 20px;
+    display: flex;
+    justify-content: stretch;
+}
+
+.scientific-notation-base {
+    flex: 1 1 auto;
+    align-self: center;
+}
+
+.scientific-notation-exponent {
+    padding-right: 1px;
+    padding-bottom: 8px;
+    flex: 1 1 auto;
+    align-self: center;
 }
 
 .button-container {
@@ -62,5 +83,5 @@ button {
     color: rgb(224, 224, 224);
     background-color: rgb(32, 32, 32);
     border-radius: 0px;
-    flex: 0 0 64px;
+    flex: 0 0 68px;
 }
