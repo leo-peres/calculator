@@ -41,6 +41,9 @@ buttonContainer.addEventListener("click", (evt) => {
             operation.operand2 = parseDisplayText(display.innerText);
         }
     }
+    else if(target.classList.contains("dot-button")) {
+        displayUpdate('.');
+    }
     else if(target.classList.contains("pm-button"))
        displayUpdate('-');
 });
@@ -90,6 +93,9 @@ const operation = {
 };
 
 function displayUpdate(input) {
+
+    if(input === '.' && isDecimal())
+        return;
 
     let displayText = display.innerText;
     if(operation.newOperand) {
@@ -268,4 +274,8 @@ function removeTrailingZeros(arr) {
 function clearScientificNotation() {
     scientificNotationBase.innerText = "";
     scientificNotationExponent.innerText = "";
+}
+
+function isDecimal() {
+    return !operation.newOperand && display.innerText.split('').includes('.');
 }
