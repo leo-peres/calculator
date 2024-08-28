@@ -53,7 +53,7 @@ buttonContainer.addEventListener("click", (evt) => {
        displayUpdate('-');
 });
 
-document.addEventListener("keyup", (evt) => { 
+document.addEventListener("keypress", (evt) => { 
     let key = evt.key
     const opArr = "+-*/=".split('')
     const inputArr = '0123456789.'.split('')
