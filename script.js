@@ -254,11 +254,17 @@ function roundNumberToDisplay(x) {
         if(dotIndex > displayCapacity + negative)
             return largeMagnitudeToDisplay(x);
 
-        const truncArr = xArr.slice(0, displayCapacity);
+        let truncArr = xArr.slice(0, displayCapacity);
         if(!truncArr.includes('.'))
             return truncArr.join('');
-        else
+        else {
+
+            truncArr = removeTrailingZeros(truncArr);
+            if(truncArr[truncArr.length - 1] === '.')
+                truncArr.pop();
+
             return removeTrailingZeros(truncArr).join('');
+        }
 
     }
     else {
