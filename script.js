@@ -139,6 +139,7 @@ function handleOpButton(operator) {
     }
     else {
         operation.newOperand = true;
+        negativeSign = false;
     }
 
     operation.operator = operator;
@@ -166,22 +167,23 @@ function clearCalculator() {
 */
 
 function parseDisplayText(displayText) {
-
     if(displayText === '-' || displayText === '-.' || displayText === '.')
         return 0;
     else
         return Number(displayText)
-
 }
 
 function displayFull() {
-    return display.innerText.length >= displayCapacity;
+    let negative = negativeSign ? 1 : 0;
+    return display.innerText.length >= displayCapacity + negative;
 }
 
 function roundNumberToDisplay(x) {
 
     let xString = String(x);
     const xArr = xString.split('');
+
+    let negative = xArr.includes('-') ? 1 : 0;
 
     let dotIndex = xArr.indexOf('.');
     let eIndex = xArr.indexOf('e');
@@ -211,7 +213,7 @@ function roundNumberToDisplay(x) {
 
     if(dotIndex != - 1) {
 
-        if(dotIndex > displayCapacity)
+        if(dotIndex > displayCapacity + negative)
             return largeMagnitudeToDisplay(x);
 
         const truncArr = xArr.slice(0, displayCapacity);
@@ -223,7 +225,7 @@ function roundNumberToDisplay(x) {
     }
     else {
 
-        if(xArr.length > displayCapacity)
+        if(xArr.length > displayCapacity + negative)
             return largeMagnitudeToDisplay(x);
 
         return xArr.join('');
@@ -239,11 +241,11 @@ function largeMagnitudeToDisplay(x) {
 
     let negative = xArr[0] == '-' ? 1 : 0;
 
-    let decimals = removeTrailingZeros(xArr.slice(1 + negative, (displayCapacity - 1) - negative));
+    let decimals = removeTrailingZeros(xArr.slice(1, displayCapacity - 1));
     if(decimals.length > 0)
-        return xArr.slice(0, negative + 1).concat('.', decimals).join('');
+        return xArr.slice(0, 1).concat('.', decimals).join('');
     else
-        return xArr.slice(0, negative + 1).join('');
+        return xArr.slice(0, 1).join('');
 
 }
 
@@ -256,9 +258,7 @@ function displayScientificNotation(x) {
 
     let exponent = Math.trunc(Math.log10(Math.abs(x)));
 
-    let negative = x < 0 ? 1 : 0;
-
-    if(exponent <= 1 - (displayCapacity - negative) || exponent >= displayCapacity - negative) {
+    if(exponent <= 1 - displayCapacity || exponent >= displayCapacity) {
         scientificNotationBase.innerText = "x10";
         scientificNotationExponent.innerText = exponent;  
     }
