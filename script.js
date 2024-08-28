@@ -20,6 +20,11 @@ Button event listeners
 */
 
 buttonContainer.addEventListener("click", (evt) => {
+
+    if(errorMessage) {
+        clearCalculator();
+    }
+
     let target = evt.target;
     if(target.classList.contains("number-button")) {
         let number_pressed = parseFloat(target.innerText);
@@ -56,6 +61,8 @@ buttonContainer.addEventListener("click", (evt) => {
 const displayCapacity = 9;
 
 let negativeSign = false;
+
+let errorMessage = false;
 
 const operation = {
     operand1: null,
@@ -131,11 +138,23 @@ function displayUpdate(input) {
 function handleOpButton(operator) {
 
     if(operation.operand1Ready) {
+
         operation.operate();
+
+        if(operation.result === Infinity) {
+
+            display.innerText = "MATH ERROR";
+            errorMessage = true;
+
+            return;
+
+        }
+
         display.innerText = roundNumberToDisplay(operation.result);
         operation.operand2 = operation.result;
         operation.operand1Ready = false;
         operation.newOperand = true;
+
     }
     else {
         operation.newOperand = true;
@@ -157,6 +176,8 @@ function clearCalculator() {
     display.innerText = '0';
 
     negativeSign = false;
+
+    errorMessage = false;
 
     clearScientificNotation();
 
