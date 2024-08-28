@@ -36,11 +36,13 @@ buttonContainer.addEventListener("click", (evt) => {
         clearCalculator();
     }
     else if(target.classList.contains("del-button")) {
-        if(display.innerText !== '0' && !operation.newOperand) {
+        if(!operation.newOperand) {
             display.innerText = display.innerText.slice(0, -1) || '0';
             operation.operand2 = parseDisplayText(display.innerText);
         }
     }
+    else if(target.classList.contains("pm-button"))
+       displayUpdate('-');
 });
 
 
@@ -49,6 +51,8 @@ buttonContainer.addEventListener("click", (evt) => {
 */
 
 const displayCapacity = 9;
+
+let negativeSign = false;
 
 const operation = {
     operand1: null,
@@ -87,14 +91,11 @@ const operation = {
 
 function displayUpdate(input) {
 
-    //let currentNumber = operation.operand2;
     let displayText = display.innerText;
     if(operation.newOperand) {
 
-        //operation.operand1 = currentNumber;
-        //operation.operand1 = parseDisplayText(displayText);
         operation.operand1 = operation.operand2;
-        operation.operand2 = input;
+        operation.operand2 = parseDisplayText(String(input));
         operation.operand1Ready = true;
         display.innerText = input;
         operation.newOperand = false;
@@ -103,13 +104,21 @@ function displayUpdate(input) {
         clearScientificNotation();
 
     }
-    else if(!displayFull()) {
-        //currentNumber = 10*currentNumber + input;
+    else if(!displayFull() && input !== '-') {
         displayText = displayText === '0' ? input : displayText + input;
-        //operation.operand2 = currentNumber;
         operation.operand2 = parseDisplayText(displayText);
         display.innerText = displayText;
     }
+    else if(input === '-'){
+        if(negativeSign)
+            display.innerText = display.innerText.slice(1) || '0';
+        else
+            display.innerText = displayText === '0' ? '-' : '-' + display.innerText;
+
+        operation.operand2 = parseDisplayText(display.innerText);
+    }
+
+    negativeSign = input === '-' ? !negativeSign : negativeSign;
 
 }
 
@@ -140,6 +149,8 @@ function clearCalculator() {
     operation.operator = '=';
     display.innerText = '0';
 
+    negativeSign = false;
+
     clearScientificNotation();
 
 }
@@ -150,15 +161,10 @@ function clearCalculator() {
 
 function parseDisplayText(displayText) {
 
-    if(displayText == '-.' || displayText == '.')
+    if(displayText === '-' || displayText === '-.' || displayText === '.')
         return 0;
-    else {
-
-        let exponent = Number(scientificNotationExponent.innerText);
-
+    else
         return Number(displayText)
-
-    }
 
 }
 
@@ -225,13 +231,13 @@ function largeMagnitudeToDisplay(x) {
     let xString = String(x);
     let xArr = xString.split('');
 
-    let negativeSign = xArr[0] == '-' ? 1 : 0;
+    let negative = xArr[0] == '-' ? 1 : 0;
 
-    let decimals = removeTrailingZeros(xArr.slice(1 + negativeSign, (displayCapacity - 1) - negativeSign));
+    let decimals = removeTrailingZeros(xArr.slice(1 + negative, (displayCapacity - 1) - negative));
     if(decimals.length > 0)
-        return xArr.slice(0, negativeSign + 1).concat('.', decimals).join('');
+        return xArr.slice(0, negative + 1).concat('.', decimals).join('');
     else
-        return xArr.slice(0, negativeSign + 1).join('');
+        return xArr.slice(0, negative + 1).join('');
 
 }
 
