@@ -35,6 +35,12 @@ buttonContainer.addEventListener("click", (evt) => {
     else if(target.classList.contains("clear-button")) {
         clearCalculator();
     }
+    else if(target.classList.contains("del-button")) {
+        if(display.innerText !== '0' && !operation.newOperand) {
+            display.innerText = display.innerText.slice(0, -1) || '0';
+            operation.operand2 = parseDisplayText(display.innerText);
+        }
+    }
 });
 
 
@@ -42,7 +48,7 @@ buttonContainer.addEventListener("click", (evt) => {
 ************************************************************************************************
 */
 
-const displayCapacity = 10;
+const displayCapacity = 9;
 
 const operation = {
     operand1: null,
@@ -81,10 +87,13 @@ const operation = {
 
 function displayUpdate(input) {
 
-    let currentNumber = operation.operand2;
+    //let currentNumber = operation.operand2;
+    let displayText = display.innerText;
     if(operation.newOperand) {
 
-        operation.operand1 = currentNumber;
+        //operation.operand1 = currentNumber;
+        //operation.operand1 = parseDisplayText(displayText);
+        operation.operand1 = operation.operand2;
         operation.operand2 = input;
         operation.operand1Ready = true;
         display.innerText = input;
@@ -95,9 +104,11 @@ function displayUpdate(input) {
 
     }
     else if(!displayFull()) {
-        currentNumber = 10*currentNumber + input;
-        operation.operand2 = currentNumber;
-        display.innerText = currentNumber;
+        //currentNumber = 10*currentNumber + input;
+        displayText = displayText === '0' ? input : displayText + input;
+        //operation.operand2 = currentNumber;
+        operation.operand2 = parseDisplayText(displayText);
+        display.innerText = displayText;
     }
 
 }
@@ -136,6 +147,20 @@ function clearCalculator() {
 /*
 ************************************************************************************************
 */
+
+function parseDisplayText(displayText) {
+
+    if(displayText == '-.' || displayText == '.')
+        return 0;
+    else {
+
+        let exponent = Number(scientificNotationExponent.innerText);
+
+        return Number(displayText)
+
+    }
+
+}
 
 function displayFull() {
     return display.innerText.length >= displayCapacity;
@@ -178,7 +203,7 @@ function roundNumberToDisplay(x) {
             return largeMagnitudeToDisplay(x);
 
         const truncArr = xArr.slice(0, displayCapacity);
-        if(truncArr.includes('.'))
+        if(!truncArr.includes('.'))
             return truncArr.join('');
         else
             return removeTrailingZeros(truncArr).join('');
