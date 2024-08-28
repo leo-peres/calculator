@@ -158,7 +158,7 @@ function handleOpButton(operator) {
 
         operation.operate();
 
-        if(operation.result === Infinity) {
+        if(Math.abs(operation.result) === Infinity) {
 
             display.innerText = "MATH ERROR";
             errorMessage = true;
