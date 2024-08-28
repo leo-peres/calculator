@@ -53,6 +53,23 @@ buttonContainer.addEventListener("click", (evt) => {
        displayUpdate('-');
 });
 
+document.addEventListener("keyup", (evt) => { 
+    let key = evt.key
+    const opArr = "+-*/=".split('')
+    const inputArr = '0123456789.'.split('')
+    if(opArr.includes(key)) {
+        handleOpButton(key);
+    }
+    else if(inputArr.includes(key)) {
+        displayUpdate(key);
+    }
+    else if(key == "Backspace") {
+        if(!operation.newOperand) {
+            display.innerText = display.innerText.slice(0, -1) || '0';
+            operation.operand2 = parseDisplayText(display.innerText);
+        }     
+    }
+})
 
 /*
 ************************************************************************************************
